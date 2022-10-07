@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 可以执行 npm run lint，但此时会校验所有文件
+# 通过 lint-staged 可只校验暂存的代码格式
+npm run lint-staged

@@ -5,7 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:vue/vue3-essential',
-    '@vue/prettier',
+    'plugin:prettier/recommended'
   ],
   overrides: [],
   parserOptions: {
@@ -18,6 +18,6 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    "prettier/prettier": 0, //让eslint忽略pretteir的格式化，不发出警告 已经有自动化格式插件
+    // "prettier/prettier": 0, //让eslint忽略pretteir的格式化，不发出警告 已经有自动化格式插件
   }
 }

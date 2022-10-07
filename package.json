@@ -7,21 +7,43 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "commit": "cz",
     "lint": "eslint src/**/*.{js,jsx,vue,ts,tsx} --fix",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "lint-staged": "npx lint-staged",
+    "prepare": "husky install"
   },
   "dependencies": {
     "vue": "^3.2.37"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "@vitejs/plugin-vue": "^3.1.0",
+    "commitizen": "^4.2.5",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.0.1",
     "eslint-plugin-vue": "^9.6.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
+    "prettier-eslint": "^15.0.1",
     "vite": "^3.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue,ts,tsx}": [
+      "eslint --max-warnings 0 --fix"
+    ]
   }
 }

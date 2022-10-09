@@ -8,6 +8,15 @@
 </template>
 
 <script setup>
+import { testAxios } from '@/api/index.js'
+
+testAxios({ test: 'aaaa' })
+  .then((res) => {
+    console.log('🚀【请求成功】', res)
+  })
+  .catch((err) => {
+    console.log('🚀【请求报错】', err)
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -9,6 +9,12 @@
 
 <script setup>
 import { testAxios } from '@/api/index.js'
+import Storage from '../../utils/storage'
+const storage = new Storage()
+storage.setItem('aaa', 'teststorage')
+
+console.log('🚀【测试storage】', storage.getItem('test'))
+console.log('🚀【测试storage】', storage.getItem('aaa'))
 
 testAxios({ test: 'aaaa' })
   .then((res) => {

@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import Home from '@/components/Home.vue'
 
 const routes = [{
   path: '/',
@@ -7,8 +8,7 @@ const routes = [{
   meta: {
     title: '首页',
   },
-  component: () =>
-    import( /* webpackChunkName: "home" */ '@/views/Home/index.vue'),
+  component: Home,
   children: [{
     path: '/welcome',
     name: 'welcome',

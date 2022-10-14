@@ -12,3 +12,13 @@ export const testAxios = (params) => {
     data: params
   })
 }
+
+// 登录接口
+export const apiLogin = (params) => {
+  return request({
+    url: '/users/login',
+    method: 'post',
+    data: params,
+    mock: true,
+  })
+}

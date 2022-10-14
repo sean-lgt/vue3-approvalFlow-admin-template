@@ -1,24 +1,27 @@
 <template>
   <div class="login-wrapper">
     <div class="modal">
-      <el-form ref="userForm" :model="user" status-icon :rules="rules">
+      <el-form ref="userFormEl" :model="userInfo" status-icon :rules="rules">
         <div class="title">火星</div>
         <el-form-item prop="userName">
           <el-input
             type="text"
             :prefix-icon="UserFilled"
-            v-model="user.userName"
+            v-model="userInfo.userName"
           ></el-input>
         </el-form-item>
         <el-form-item prop="userPwd">
           <el-input
             type="password"
             :prefix-icon="View"
-            v-model="user.userPwd"
+            v-model="userInfo.userPwd"
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="btn-login" @click="login"
+          <el-button
+            type="primary"
+            class="btn-login"
+            @click="handleLogin(userFormEl)"
             >登录</el-button
           >
         </el-form-item>
@@ -28,10 +31,15 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { UserFilled, View } from '@element-plus/icons-vue'
+import { apiLogin } from '../../api'
 
-const user = reactive({
+const router = useRouter()
+const userFormEl = ref()
+
+const userInfo = reactive({
   userName: '',
   userPwd: ''
 })
@@ -51,6 +59,22 @@ const rules = {
       trigger: 'blur'
     }
   ]
+}
+
+// 点击登录
+const handleLogin = async (formEl) => {
+  console.log('点击登录')
+  if (!formEl) return
+  await formEl.validate(async (valid, fields) => {
+    if (valid) {
+      //  校验成功 可以提交
+      console.log('submit!')
+      await apiLogin(userInfo)
+      router.push('/welcome')
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
 }
 </script>
 

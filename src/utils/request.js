@@ -21,6 +21,14 @@ const service = axios.create({
 service.interceptors.request.use((req) => {
   const headers = req.headers
   const { token } = localStorage.getItem('userInfo') || {}
+  console.log("请求数据", req)
+  console.log("请求数据", projectConfig)
+  if (req.mock) {
+    if (!req.params) {
+      req.params = {}
+    }
+    req.params['apipost_id'] = projectConfig.mockApipostId //mock请求
+  }
   if (!headers.Authorization) {
     headers.Authorization = 'Bearer ' + token
     return req

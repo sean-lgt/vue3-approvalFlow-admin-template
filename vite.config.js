@@ -39,4 +39,13 @@ export default defineConfig({
     },
     extensions: ['.vue', '.js', '.json', '.ts']
   },
+  // 本地服务代理
+  server: {
+    host: 'localhost',
+    port: '8080',
+    proxy: {
+      "/api": "http://127.0.0.1:3000",
+      rewrite: path => path.replace(/^\/api/, '/api')
+    }
+  }
 })

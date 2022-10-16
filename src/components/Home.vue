@@ -42,7 +42,7 @@
           <div class="bread">面包屑</div>
         </div>
         <div class="user-info">
-          <el-badge is-dot class="notice" type="danger">
+          <el-badge :is-dot="noticeCount" class="notice" type="danger">
             <el-icon><Bell /></el-icon>
           </el-badge>
           <el-dropdown @command="handleLogout">
@@ -83,6 +83,8 @@ import {
   Connection
 } from '@element-plus/icons-vue'
 
+import { noticeCountApi } from '../api/index'
+
 const store = useStore()
 const router = useRouter()
 
@@ -102,6 +104,18 @@ const handleLogout = (key) => {
 const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value
 }
+
+// 获取通知数量
+const noticeCount = ref(0)
+const fetchNoticeCount = async () => {
+  try {
+    const count = await noticeCountApi()
+    noticeCount.value = count
+  } catch (error) {
+    console.error('获取通知数量错误', error)
+  }
+}
+fetchNoticeCount()
 </script>
 
 <style lang="scss" scoped>
@@ -174,6 +188,7 @@ const toggleCollapse = () => {
           line-height: 30px;
           margin-right: 18px;
           margin-top: 6px;
+          cursor: pointer;
         }
         .user-link {
           cursor: pointer;

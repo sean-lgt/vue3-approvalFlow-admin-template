@@ -20,5 +20,17 @@ export const apiLogin = (params) => {
     method: 'post',
     data: params,
     mock: false,
+    mockApipostId: '977497'
+  })
+}
+
+// 获取通知数量接口
+export const noticeCountApi = () => {
+  return request({
+    url: '/leave/count',
+    method: 'get',
+    data: {},
+    mock: true,
+    mockApipostId: 'd95875'
   })
 }

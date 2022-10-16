@@ -9,11 +9,19 @@ const routes = [{
     title: '首页',
   },
   component: Home,
+  // /system/user
   children: [{
     path: '/welcome',
     name: 'welcome',
     meta: {
       title: '欢迎页',
+    },
+    component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/Home/welcome.vue')
+  }, {
+    path: '/system/user',
+    name: 'system',
+    meta: {
+      title: '用户管理',
     },
     component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/Home/welcome.vue')
   }, ],

@@ -25,7 +25,9 @@
             <el-icon v-if="!isCollapse"><Fold /></el-icon>
             <el-icon v-if="isCollapse"><Expand /></el-icon>
           </div>
-          <div class="bread">面包屑</div>
+          <div class="bread">
+            <BreadCrumb />
+          </div>
         </div>
         <div class="user-info">
           <el-badge
@@ -65,6 +67,7 @@ import { ref, reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import TreeMenu from './TreeMenu.vue'
+import BreadCrumb from './BreadCrumb.vue'
 import {
   Setting,
   Fold,
@@ -183,6 +186,10 @@ fetchMenuList()
           font-size: 26px;
           line-height: 56px;
           cursor: pointer;
+        }
+        .bread {
+          display: flex;
+          align-items: center;
         }
       }
       .user-info {

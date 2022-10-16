@@ -34,3 +34,14 @@ export const noticeCountApi = () => {
     mockApipostId: 'd95875'
   })
 }
+
+// 获取菜单列表
+export const menuListApi = (params = {}) => {
+  return request({
+    url: '/menu/list',
+    method: 'get',
+    data: params,
+    mock: true,
+    mockApipostId: '34507f'
+  })
+}

@@ -13,23 +13,9 @@
         background-color="#001529"
         text-color="#fff"
         :collapse="isCollapse"
+        router
       >
-        <el-sub-menu index="1">
-          <template #title>
-            <el-icon><Setting /></el-icon>
-            <span>用户管理</span>
-          </template>
-          <el-menu-item index="1-1">用户管理</el-menu-item>
-          <el-menu-item index="1-2">菜单管理</el-menu-item>
-        </el-sub-menu>
-        <el-sub-menu index="2">
-          <template #title>
-            <el-icon><Connection /></el-icon>
-            <span>审批管理</span>
-          </template>
-          <el-menu-item index="2-1">休假申请</el-menu-item>
-          <el-menu-item index="2-2">待我审批</el-menu-item>
-        </el-sub-menu>
+        <TreeMenu :userMenu="userMenu" />
       </el-menu>
     </div>
     <div :class="['content-right', isCollapse ? 'fold' : 'unfold']">
@@ -42,7 +28,11 @@
           <div class="bread">面包屑</div>
         </div>
         <div class="user-info">
-          <el-badge :is-dot="noticeCount" class="notice" type="danger">
+          <el-badge
+            :is-dot="noticeCount > 0 ? true : false"
+            class="notice"
+            type="danger"
+          >
             <el-icon><Bell /></el-icon>
           </el-badge>
           <el-dropdown @command="handleLogout">
@@ -71,9 +61,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import TreeMenu from './TreeMenu.vue'
 import {
   Setting,
   Fold,
@@ -83,7 +74,7 @@ import {
   Connection
 } from '@element-plus/icons-vue'
 
-import { noticeCountApi } from '../api/index'
+import { noticeCountApi, menuListApi } from '../api/index'
 
 const store = useStore()
 const router = useRouter()
@@ -116,9 +107,22 @@ const fetchNoticeCount = async () => {
   }
 }
 fetchNoticeCount()
+
+// 获取菜单列表
+let userMenu = ref([])
+const fetchMenuList = async () => {
+  try {
+    const list = await menuListApi()
+    console.log('🚀【获取菜单列表数据】', list)
+    userMenu.value = list
+  } catch (error) {
+    console.error('获取菜单列表数据错误', error)
+  }
+}
+fetchMenuList()
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .basic-layout {
   position: relative;
   .nav-side {

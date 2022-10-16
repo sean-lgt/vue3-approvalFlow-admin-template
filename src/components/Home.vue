@@ -55,7 +55,7 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item command="email"
-                  >邮箱:{{ userInfo.userEmail }}</el-dropdown-item
+                  >邮箱： {{ userInfo.userEmail }}</el-dropdown-item
                 >
                 <el-dropdown-item command="logout">退出</el-dropdown-item>
               </el-dropdown-menu>
@@ -71,7 +71,9 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import {
   Setting,
   Fold,
@@ -81,16 +83,19 @@ import {
   Connection
 } from '@element-plus/icons-vue'
 
+const store = useStore()
+const router = useRouter()
+
 const isCollapse = ref(false)
 
-const userInfo = reactive({
-  userName: 'jack',
-  userEmail: 'jack@admin.com'
-})
+const userInfo = computed(() => store.state.userInfo)
 
 // 点击退出
 const handleLogout = (key) => {
   if (key == 'email') return
+  store.commit('saveUserInfo', '')
+  userInfo.value = null
+  router.push('/login')
 }
 
 // 点击切换展开

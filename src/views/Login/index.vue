@@ -33,10 +33,12 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import { UserFilled, View } from '@element-plus/icons-vue'
 import { apiLogin } from '../../api'
 
 const router = useRouter()
+const store = useStore()
 const userFormEl = ref()
 
 const userInfo = reactive({
@@ -69,7 +71,9 @@ const handleLogin = async (formEl) => {
     if (valid) {
       //  校验成功 可以提交
       console.log('submit!')
-      await apiLogin(userInfo)
+      const loginUserInfo = await apiLogin(userInfo)
+      store.commit('saveUserInfo', loginUserInfo)
+      // console.log('🚀【loginResult】', loginResult)
       router.push('/welcome')
     } else {
       console.log('error submit!', fields)

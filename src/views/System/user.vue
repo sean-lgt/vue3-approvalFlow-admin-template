@@ -1,14 +1,14 @@
 <template>
   <div class="user-manage">
     <div class="query-form">
-      <el-form inline :model="user">
-        <el-form-item>
+      <el-form ref="formRef" inline :model="user">
+        <el-form-item prop="userId">
           <el-input v-model="user.userId" placeholder="请输入用户ID" />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="userName">
           <el-input v-model="user.userName" placeholder="请输入用户名称" />
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="state">
           <el-select v-model="user.state">
             <el-option :value="0" label="所有"></el-option>
             <el-option :value="1" label="在职"></el-option>
@@ -17,8 +17,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" @click="handleQuery">查询</el-button>
+          <el-button @click="handleReset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -49,23 +49,40 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="pagination"
+        background
+        layout="prev,pager,next"
+        :total="pager.total"
+        :page-size="pager.pageSize"
+        @current-change="handleCurrentPageChange"
+      ></el-pagination>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
+import { userListApi } from './../../api/index'
 
-const a = 'sdfafa'
+const formRef = ref()
 // 查询表单
 const user = reactive({
   userId: '',
   userName: '',
-  state: ''
+  state: 1
+})
+
+//分页数据
+const pager = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  total: 0
 })
 
 // 用户列表
-const userList = reactive([
+// reactive() 不可重新赋值（会丢失响应性），如果需要赋值操作需要使用ref，ref() 有一个 .value 属性可以用来重新赋值
+let userList = ref([
   {
     state: 1,
     role: 8,
@@ -81,6 +98,40 @@ const userList = reactive([
     mobile: '1781545571'
   }
 ])
+
+const fetchUserList = async () => {
+  let params = { ...user, ...pager }
+  try {
+    const { list, page } = await userListApi(params)
+    userList.value = list //赋值
+    pager.total = page.total //总条数
+    console.log('🚀【获取用户列表数据】>>>', userList)
+  } catch (error) {
+    console.log('🚀【获取列表失败】', error)
+  }
+}
+
+fetchUserList()
+
+// 点击查询
+const handleQuery = () => {
+  pager.pageNum = 1
+  pager.pageSize = 10
+  pager.total = 0
+  fetchUserList()
+}
+
+// 重置查询
+const handleReset = () => {
+  if (!formRef.value) return
+  formRef.value.resetFields()
+}
+
+// 分页切换
+const handleCurrentPageChange = (current) => {
+  pager.pageNum = current
+  fetchUserList()
+}
 
 // 定义动态表格-格式
 const columns = reactive([

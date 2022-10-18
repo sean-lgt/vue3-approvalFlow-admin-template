@@ -45,3 +45,14 @@ export const menuListApi = (params = {}) => {
     mockApipostId: '34507f'
   })
 }
+
+// 获取用户列表
+export const userListApi = (params = {}) => {
+  return request({
+    url: '/users/list',
+    method: 'get',
+    data: params,
+    mock: true,
+    mockApipostId: 'e9e863'
+  })
+}

@@ -214,7 +214,7 @@ fetchMenuList()
       padding: 20px;
       height: calc(100vh - 50px);
       .main-page {
-        background: #fff;
+        // background: #fff;
         height: 100%;
       }
     }

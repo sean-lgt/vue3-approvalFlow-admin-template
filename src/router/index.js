@@ -19,11 +19,11 @@ const routes = [{
     component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/Home/welcome.vue')
   }, {
     path: '/system/user',
-    name: 'system',
+    name: 'systemUser',
     meta: {
       title: '用户管理',
     },
-    component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/Home/welcome.vue')
+    component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/user.vue')
   }, ],
 }, {
   path: '/login',

@@ -63,7 +63,9 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
-import { userListApi } from './../../api/index'
+import { userListApi, userDelApi } from './../../api/index'
+import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
+import 'element-plus/es/components/message/style/css'
 
 const formRef = ref()
 // 查询表单
@@ -131,6 +133,59 @@ const handleReset = () => {
 const handleCurrentPageChange = (current) => {
   pager.pageNum = current
   fetchUserList()
+}
+
+// 点击删除按钮
+const handleDel = async (item) => {
+  console.log('🚀【点击删除按钮】', item)
+  const delResult = await userDelApi({
+    userIds: [item.userId]
+  })
+  ElMessage({
+    message: '删除成功',
+    grouping: true,
+    type: 'success'
+  })
+  fetchUserList() // 刷新数据
+  console.log('🚀【结果id】', delResult)
+}
+
+const checkedUserIds = ref([])
+// 监听更改选中
+const handleSelectionChange = (list) => {
+  let arr = []
+  list.map((item) => {
+    arr.push(item.userId)
+  })
+  checkedUserIds.value = arr
+}
+// 点击批量删除
+const handlePatchDel = async () => {
+  if (checkedUserIds.value.length == 0) {
+    ElMessage({
+      message: '请选择要删除的用户',
+      grouping: true,
+      type: 'error'
+    })
+    return
+  }
+  const delResult = await userDelApi({
+    userIds: checkedUserIds.value
+  })
+  if (delResult.nModified > 0) {
+    ElMessage({
+      message: '删除成功',
+      grouping: true,
+      type: 'success'
+    })
+    fetchUserList()
+  } else {
+    ElMessage({
+      message: '删除失败',
+      grouping: true,
+      type: 'error'
+    })
+  }
 }
 
 // 定义动态表格-格式

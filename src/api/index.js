@@ -56,3 +56,14 @@ export const userListApi = (params = {}) => {
     mockApipostId: 'e9e863'
   })
 }
+
+// 用户列表删除接口
+export const userDelApi = (params) => {
+  return request({
+    url: '/users/delete',
+    method: 'post',
+    data: params,
+    mock: true,
+    mockApipostId: '96c75e'
+  })
+}

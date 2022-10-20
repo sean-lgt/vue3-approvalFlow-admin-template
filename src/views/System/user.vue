@@ -135,8 +135,14 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
-import { userListApi, userDelApi } from './../../api/index'
+import { reactive, ref, onMounted, toRaw } from 'vue'
+import {
+  userListApi,
+  userDelApi,
+  roleAllListApi,
+  deptAllListApi,
+  addUserApi
+} from './../../api/index'
 import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
 import 'element-plus/es/components/message/style/css'
 
@@ -300,6 +306,25 @@ const rules = reactive({
   ]
 })
 
+// 获取用户部门列表
+const fetchDeptList = async () => {
+  const listResult = await deptAllListApi()
+  deptList.value = listResult
+  console.log('🚀【部门列表】', listResult)
+}
+
+// 获取角色列表
+const fetchRoleList = async () => {
+  const listResult = await roleAllListApi()
+  roleList.value = listResult
+  console.log('🚀【列表数据】', listResult)
+}
+
+onMounted(() => {
+  fetchRoleList()
+  fetchDeptList()
+})
+
 // 用户新增
 const handleCreate = () => {
   action.value = 'add'
@@ -310,6 +335,35 @@ const handleCreate = () => {
 const handleClose = () => {
   showModal.value = false
   dialogFormRef.value.resetFields() //清空原表单
+}
+
+// 点击确定提交
+const handleSubmit = async () => {
+  console.log('🚀【点击确定提交】')
+  if (!dialogFormRef.value) return
+  await dialogFormRef.value.validate(async (valid, fields) => {
+    if (valid) {
+      //  校验成功 可以提交
+      let params = toRaw(userForm) //响应式对象转换成普通对象
+      params.userEmail += '@admin.com'
+      params.action = action.value
+      const submitResult = await addUserApi(params)
+      ElMessage({
+        message: '新增成功',
+        grouping: true,
+        type: 'success'
+      })
+      showModal.value = false
+      dialogFormRef.value.resetFields() //清空原表单
+    } else {
+      console.log('error submit!', fields)
+      ElMessage({
+        message: '请先完成表单',
+        grouping: true,
+        type: 'error'
+      })
+    }
+  })
 }
 
 // 定义动态表格-格式

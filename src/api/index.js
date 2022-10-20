@@ -67,3 +67,36 @@ export const userDelApi = (params) => {
     mockApipostId: '96c75e'
   })
 }
+
+// 角色名称列表
+export const roleAllListApi = () => {
+  return request({
+    url: '/roles/allList',
+    method: 'get',
+    data: {},
+    mock: true,
+    mockApipostId: '5bb5f5'
+  })
+}
+
+// 部门名称列表
+export const deptAllListApi = () => {
+  return request({
+    url: '/dept/allList',
+    method: 'get',
+    data: {},
+    mock: true,
+    mockApipostId: '633e51'
+  })
+}
+
+// 确认提交新增用户
+export const addUserApi = (params) => {
+  return request({
+    url: '/users/operate',
+    method: 'post',
+    data: params,
+    mock: true,
+    mockApipostId: '40e96b'
+  })
+}

@@ -366,6 +366,14 @@ const handleSubmit = async () => {
   })
 }
 
+// 点击编辑操作
+const handleEdit = (editItem) => {
+  console.log('点击编辑操作', editItem)
+  action.value = 'edit'
+  Object.assign(userForm, editItem) // 浅拷贝回显表单
+  showModal.value = true
+}
+
 // 定义动态表格-格式
 const columns = reactive([
   {

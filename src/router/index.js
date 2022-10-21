@@ -11,20 +11,29 @@ const routes = [{
   component: Home,
   // /system/user
   children: [{
-    path: '/welcome',
-    name: 'welcome',
-    meta: {
-      title: '欢迎页',
+      path: '/welcome',
+      name: 'welcome',
+      meta: {
+        title: '欢迎页',
+      },
+      component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/Home/welcome.vue')
+    }, {
+      path: '/system/user',
+      name: 'systemUser',
+      meta: {
+        title: '用户管理',
+      },
+      component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/user.vue')
     },
-    component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/Home/welcome.vue')
-  }, {
-    path: '/system/user',
-    name: 'systemUser',
-    meta: {
-      title: '用户管理',
+    {
+      path: '/system/menu',
+      name: 'systemMenu',
+      meta: {
+        title: '菜单管理',
+      },
+      component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/menu.vue')
     },
-    component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/user.vue')
-  }, ],
+  ],
 }, {
   path: '/login',
   name: 'login',

@@ -52,7 +52,7 @@ export const userListApi = (params = {}) => {
     url: '/users/list',
     method: 'get',
     data: params,
-    mock: true,
+    mock: false,
     mockApipostId: 'e9e863'
   })
 }
@@ -63,7 +63,7 @@ export const userDelApi = (params) => {
     url: '/users/delete',
     method: 'post',
     data: params,
-    mock: true,
+    mock: false,
     mockApipostId: '96c75e'
   })
 }
@@ -96,7 +96,7 @@ export const addUserApi = (params) => {
     url: '/users/operate',
     method: 'post',
     data: params,
-    mock: true,
+    mock: false,
     mockApipostId: '40e96b'
   })
 }

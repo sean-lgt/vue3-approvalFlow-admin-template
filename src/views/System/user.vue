@@ -144,6 +144,7 @@ import {
   addUserApi
 } from './../../api/index'
 import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
+import utils from '../../utils/utils'
 import 'element-plus/es/components/message/style/css'
 
 const formRef = ref()
@@ -411,13 +412,19 @@ const columns = reactive([
   },
   {
     label: '注册时间',
-    prop: 'createTime',
-    width: 180
+    prop: 'ceateTime',
+    width: 180,
+    formatter: (row, column, value) => {
+      return utils.formateDate(new Date(value))
+    }
   },
   {
     label: '最后登录时间',
     prop: 'lastLoginTime',
-    width: 180
+    width: 180,
+    formatter: (row, column, value) => {
+      return utils.formateDate(new Date(value))
+    }
   }
 ])
 </script>

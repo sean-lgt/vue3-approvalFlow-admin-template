@@ -4,9 +4,13 @@
 
 import axios from 'axios'
 import projectConfig from '@/config'
+import Storage from "../utils/storage";
 import { ElMessage } from 'element-plus'
 import router from '@/router'
+import { locale } from 'dayjs';
 
+
+const storage = new Storage()
 const TOKEN_INVALID = 'Token认证失败，请重新登录'
 const NETWORK_ERROR = '网络请求异常,请稍后重试'
 
@@ -19,7 +23,7 @@ const service = axios.create({
 // 请求拦截
 service.interceptors.request.use((req) => {
   const headers = req.headers
-  const { token } = localStorage.getItem('userInfo') || {}
+  const { token } = storage.getItem("userInfo") || {}
   console.log('请求数据', req)
   console.log('请求数据', projectConfig)
   if (req.mock) {
@@ -71,16 +75,17 @@ const request = (options) => {
     service.defaults.baseURL = projectConfig.baseApi
   } else {
     // 判断是否要启用 mock
-    service.defaults.baseURL = isMock
-      ? projectConfig.mockApi
-      : projectConfig.baseApi
+    service.defaults.baseURL = isMock ?
+      projectConfig.mockApi :
+      projectConfig.baseApi
   }
 
   return service(options)
 }
 
 // 注册 request 快捷方式
-;['get', 'post', 'put', 'delete', 'patch'].forEach((reqType) => {
+;
+['get', 'post', 'put', 'delete', 'patch'].forEach((reqType) => {
   request[reqType] = (url, data, options) => {
     return request({
       url,

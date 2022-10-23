@@ -100,3 +100,14 @@ export const addUserApi = (params) => {
     mockApipostId: '40e96b'
   })
 }
+
+// 确认提交菜单管理信息
+export const menuOperateApi = (params) => {
+  return request({
+    url: '/menu/operate',
+    method: 'post',
+    data: params,
+    mock: true,
+    mockApipostId: '6b4fbb'
+  })
+}

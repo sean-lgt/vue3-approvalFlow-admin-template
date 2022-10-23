@@ -37,7 +37,7 @@
           :width="item.width"
           :formatter="item.formater"
         ></el-table-column>
-        <el-table-column label="操作" width="220">
+        <el-table-column label="操作" width="260">
           <template #default="scope">
             <el-button
               @click="handleAdd(2, scope.row)"
@@ -58,7 +58,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="用户新增" v-model="showModal">
+    <el-dialog title="菜单新增" v-model="showModal">
       <el-form
         ref="dialogFormRef"
         :model="menuForm"
@@ -88,7 +88,10 @@
           prop="icon"
           v-show="menuForm.menuType == 1"
         >
-          <el-input v-model="menuForm.icon" placeholder="请输入岗位" />
+          <el-input
+            v-model="menuForm.icon"
+            placeholder="请输入菜单的Element-Plus图标"
+          />
         </el-form-item>
         <el-form-item
           label="路由地址"
@@ -133,9 +136,11 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import utils from '../../utils/utils'
-
+import { menuListApi, menuOperateApi } from '../../api/index'
+import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
+import 'element-plus/es/components/message/style/css'
 const queryFormRef = ref() //查询实例
 const queryForm = reactive({
   menuName: '',
@@ -234,6 +239,9 @@ const rules = {
 const handleAdd = (type, row) => {
   showModal.value = true
   action.value = 'add'
+  if (type == 2) {
+    menuForm.parentId = [...row.parentId, row._id].filter((item) => item)
+  }
 }
 
 // 关闭菜单
@@ -248,11 +256,36 @@ const handleSubmit = async () => {
   await dialogFormRef.value.validate(async (valid, fields) => {
     if (valid) {
       //  校验成功 可以提交
+      const params = { ...menuForm, action: action.value }
+      console.log('🚀【需要提交的数据】', params)
+      const submitResult = await menuOperateApi(params)
+      showModal.value = false
+      ElMessage({
+        message: '操作成功',
+        grouping: true,
+        type: 'success'
+      })
+      dialogFormRef.value.resetFields() //重置表单
+      fetchMenuList() //重新请求数据
     } else {
       console.log('error submit!', fields)
     }
   })
 }
+
+// 获取菜单初始化列表
+const fetchMenuList = async () => {
+  try {
+    const list = await menuListApi()
+    menuList.value = list
+  } catch (error) {
+    console.log('🚀【请求列表报错】', error)
+  }
+}
+
+onMounted(() => {
+  fetchMenuList() //生命钩子函数获取数
+})
 </script>
 
 <style lang="scss" scoped></style>

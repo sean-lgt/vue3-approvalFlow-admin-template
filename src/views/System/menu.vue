@@ -76,8 +76,8 @@
         </el-form-item>
         <el-form-item label="菜单类型" prop="menuType">
           <el-radio-group v-model="menuForm.menuType">
-            <el-radio :label="1">菜单</el-radio>
-            <el-radio :label="2">按钮</el-radio>
+            <el-radio :label="1 + ''">菜单</el-radio>
+            <el-radio :label="2 + ''">按钮</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单名称" prop="menuName">
@@ -120,8 +120,8 @@
           v-show="menuForm.menuType == 1"
         >
           <el-radio-group v-model="menuForm.menuState">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio :label="2">停用</el-radio>
+            <el-radio :label="1 + ''">正常</el-radio>
+            <el-radio :label="2 + ''">停用</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -136,7 +136,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, nextTick } from 'vue'
 import utils from '../../utils/utils'
 import { menuListApi, menuOperateApi } from '../../api/index'
 import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
@@ -286,6 +286,26 @@ const fetchMenuList = async () => {
 onMounted(() => {
   fetchMenuList() //生命钩子函数获取数
 })
+
+// 点击编辑操作
+const handleEdit = async (rowItem) => {
+  showModal.value = true
+  action.value = 'edit'
+  await nextTick() // 等待dom更新结束后再赋值，可清空表单
+  Object.assign(menuForm, rowItem)
+}
+
+// 点击删除操作
+const handleDel = async (_id) => {
+  const resultDel = await menuOperateApi({ _id, action: 'delete' })
+  ElMessage({
+    message: '删除成功',
+    grouping: true,
+    type: 'success'
+  })
+  // 更新列表
+  fetchMenuList()
+}
 </script>
 
 <style lang="scss" scoped></style>

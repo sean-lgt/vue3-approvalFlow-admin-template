@@ -41,7 +41,7 @@ export const menuListApi = (params = {}) => {
     url: '/menu/list',
     method: 'get',
     data: params,
-    mock: true,
+    mock: false,
     mockApipostId: '34507f'
   })
 }
@@ -107,7 +107,7 @@ export const menuOperateApi = (params) => {
     url: '/menu/operate',
     method: 'post',
     data: params,
-    mock: true,
+    mock: false,
     mockApipostId: '6b4fbb'
   })
 }

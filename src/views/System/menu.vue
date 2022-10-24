@@ -35,7 +35,7 @@
           :prop="item.prop"
           :label="item.label"
           :width="item.width"
-          :formatter="item.formater"
+          :formatter="item.formatter"
         ></el-table-column>
         <el-table-column label="操作" width="260">
           <template #default="scope">
@@ -76,8 +76,8 @@
         </el-form-item>
         <el-form-item label="菜单类型" prop="menuType">
           <el-radio-group v-model="menuForm.menuType">
-            <el-radio :label="1 + ''">菜单</el-radio>
-            <el-radio :label="2 + ''">按钮</el-radio>
+            <el-radio :label="1">菜单</el-radio>
+            <el-radio :label="2">按钮</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单名称" prop="menuName">
@@ -120,8 +120,8 @@
           v-show="menuForm.menuType == 1"
         >
           <el-radio-group v-model="menuForm.menuState">
-            <el-radio :label="1 + ''">正常</el-radio>
-            <el-radio :label="2 + ''">停用</el-radio>
+            <el-radio :label="1">正常</el-radio>
+            <el-radio :label="2">停用</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -194,6 +194,7 @@ const columns = [
     label: '创建时间',
     prop: 'createTime',
     formatter(row, column, value) {
+      console.log('🚀【test】', new Date(value))
       return utils.formateDate(new Date(value))
     }
   }

@@ -68,7 +68,7 @@ export const userDelApi = (params) => {
   })
 }
 
-// 角色名称列表
+// 所有角色名称列表
 export const roleAllListApi = () => {
   return request({
     url: '/roles/allList',
@@ -109,5 +109,16 @@ export const menuOperateApi = (params) => {
     data: params,
     mock: false,
     mockApipostId: '6b4fbb'
+  })
+}
+
+// 获取角色列表
+export const roleListApi = (params = {}) => {
+  return request({
+    url: '/roles/list',
+    method: 'get',
+    data: params,
+    mock: true,
+    mockApipostId: 'a99d81'
   })
 }

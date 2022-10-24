@@ -33,6 +33,14 @@ const routes = [{
       },
       component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/menu.vue')
     },
+    {
+      path: '/system/role',
+      name: 'systemRole',
+      meta: {
+        title: '角色管理',
+      },
+      component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/role.vue')
+    },
   ],
 }, {
   path: '/login',

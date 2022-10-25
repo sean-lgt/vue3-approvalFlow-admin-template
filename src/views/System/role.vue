@@ -59,13 +59,51 @@
         @current-change="handleCurrentChange"
       />
     </div>
+    <!-- 添加role弹窗 -->
+    <el-dialog
+      v-model="showAddDialog"
+      title="角色管理"
+      width="40%"
+      @close="handleCloseAddDialog"
+    >
+      <el-form
+        ref="addFormRef"
+        :model="roleAddForm"
+        label-width="100px"
+        :rules="addRoleRules"
+      >
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input
+            type="text"
+            placeholder="请输入角色名称"
+            v-model="roleAddForm.roleName"
+          />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input
+            type="textarea"
+            rows="4"
+            placeholder="请输入备注"
+            v-model="roleAddForm.remark"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showAddDialog = false">取消</el-button>
+          <el-button type="primary" @click="onRoleOperate">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, toRaw, nextTick } from 'vue'
 import utils from '../../utils/utils'
-import { roleListApi } from '../../api/index'
+import { roleListApi, roleOperateApi } from '../../api/index'
+import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
+import 'element-plus/es/components/message/style/css'
 
 const queryFormRef = ref()
 const queryForm = reactive({
@@ -134,6 +172,89 @@ const handleQuery = () => {
 const handleResetQuery = () => {
   if (!queryFormRef.value) return
   queryFormRef.value.resetFields()
+}
+
+const action = ref('add')
+// 添加/修改角色dialog弹窗
+const showAddDialog = ref(false)
+const addFormRef = ref()
+
+const roleAddForm = reactive({
+  roleName: '',
+  remark: ''
+})
+
+const addRoleRules = {
+  roleName: {
+    required: true,
+    message: '必须填写角色名称',
+    trigger: 'blur'
+  }
+}
+
+// 点击编辑
+const handleEdit = (role = {}) => {
+  action.value = 'edit'
+  showAddDialog.value = true
+  nextTick(() => {
+    for (const key in role) {
+      roleAddForm[key] = role[key]
+    }
+  })
+}
+
+// 点击删除
+const handleDel = async (_id) => {
+  action.value = 'delete'
+  const params = { _id }
+  params.action = action.value
+  const submitResult = await roleOperateApi(params)
+  ElMessage({
+    message: '删除成功',
+    grouping: true,
+    type: 'success'
+  })
+  fetchRoleList() //重新请求列表
+}
+
+// 点击创建角色
+const handleRoleCreate = () => {
+  action.value = 'add'
+  showAddDialog.value = true
+}
+
+// 监听dialog 关闭
+const handleCloseAddDialog = () => {
+  if (!addFormRef.value) return
+  addFormRef.value.resetFields()
+}
+
+// 点击确认增加role
+const onRoleOperate = async () => {
+  if (!addFormRef.value) return
+  await addFormRef.value.validate(async (valid, fields) => {
+    if (valid) {
+      //  校验成功 可以提交
+      const params = toRaw(roleAddForm) //转为普通对象
+      params.action = action.value
+      const submitResult = await roleOperateApi(params)
+      ElMessage({
+        message: '创建成功',
+        grouping: true,
+        type: 'success'
+      })
+      fetchRoleList() //重新请求列表
+      showAddDialog.value = false
+      addFormRef.value.resetFields() //清空原表单
+    } else {
+      console.log('error submit!', fields)
+      ElMessage({
+        message: '请先完成表单',
+        grouping: true,
+        type: 'error'
+      })
+    }
+  })
 }
 </script>
 

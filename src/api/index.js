@@ -122,3 +122,14 @@ export const roleListApi = (params = {}) => {
     mockApipostId: 'a99d81'
   })
 }
+
+// 角色相关操作 增加、编辑、删除
+export const roleOperateApi = (params = {}) => {
+  return request({
+    url: '/roles/operate',
+    method: 'post',
+    data: params,
+    mock: true,
+    mockApipostId: 'c9c33c'
+  })
+}

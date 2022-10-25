@@ -95,13 +95,40 @@
         </span>
       </template>
     </el-dialog>
+    <!-- 修改权限弹窗 -->
+    <el-dialog
+      v-model="showPermission"
+      :title="currentRole.roleName"
+      width="40%"
+    >
+      <el-tree
+        ref="treeRef"
+        default-expand-all
+        node-key="_id"
+        :data="menuList"
+        :props="{ label: 'menuName' }"
+        show-checkbox
+      >
+      </el-tree>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showPermission = false">取消</el-button>
+          <el-button type="primary" @click="onPermissionSubmit">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, toRaw, nextTick } from 'vue'
+import { ref, reactive, toRaw, nextTick, onMounted } from 'vue'
 import utils from '../../utils/utils'
-import { roleListApi, roleOperateApi } from '../../api/index'
+import {
+  roleListApi,
+  roleOperateApi,
+  menuListMockApi,
+  rolePermissionApi
+} from '../../api/index'
 import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
 import 'element-plus/es/components/message/style/css'
 
@@ -255,6 +282,74 @@ const onRoleOperate = async () => {
       })
     }
   })
+}
+
+// 角色权限相关操作
+const showPermission = ref(false)
+const currentRole = ref({})
+const treeRef = ref()
+const menuList = ref([])
+const menuMap = ref([]) //菜单映射
+
+// 请求获取菜单列表
+const fetchMenuList = async () => {
+  try {
+    const list = await menuListMockApi()
+    menuList.value = list
+    setMenuMap(list) // 组装，菜单映射
+  } catch (error) {}
+}
+
+const setMenuMap = (list) => {
+  const res = {}
+  const deep = (arr) => {
+    while (arr.length) {
+      const menu = arr.pop() //出栈
+      res[menu._id] = menu.menuName
+      if (menu.children) {
+        deep(menu.children) //递归
+      }
+    }
+  }
+  deep(JSON.parse(JSON.stringify(list))) //拷贝
+  menuMap.value = res
+  console.log('🚀【映射关系】', menuMap.value)
+}
+
+onMounted(() => {
+  // 获取菜单列表
+  fetchMenuList()
+})
+
+// 点击设置权限
+const handleOpenPermission = (role) => {
+  currentRole.value = role
+  showPermission.value = true
+  nextTick(() => {
+    setCheckedKeys() //设置已经选中的状态
+  })
+}
+
+const setCheckedKeys = () => {
+  const checkedKeys = toRaw(currentRole.value.permissionList.checkedKeys)
+  treeRef.value.setCheckedKeys(checkedKeys)
+}
+
+// 确认角色权限修改
+const onPermissionSubmit = async () => {
+  const halfCheckedKeys = treeRef.value.getHalfCheckedKeys()
+  const checkedKeys = treeRef.value.getCheckedKeys()
+  const params = {}
+  params._id = currentRole.value._id
+  params.permissionList = { halfCheckedKeys, checkedKeys }
+  const submitResult = await rolePermissionApi(params)
+  ElMessage({
+    message: '设置成功',
+    grouping: true,
+    type: 'success'
+  })
+  fetchRoleList() //重新请求列表
+  showPermission.value = false
 }
 </script>
 

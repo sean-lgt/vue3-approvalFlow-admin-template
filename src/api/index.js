@@ -133,3 +133,26 @@ export const roleOperateApi = (params = {}) => {
     mockApipostId: 'c9c33c'
   })
 }
+
+// mock 菜单列表 获取按钮及菜单权限
+// 获取菜单列表
+export const menuListMockApi = (params = {}) => {
+  return request({
+    url: '/menu/list',
+    method: 'get',
+    data: params,
+    mock: true,
+    mockApipostId: '34507f'
+  })
+}
+
+// 角色权限操作
+export const rolePermissionApi = (params = {}) => {
+  return request({
+    url: '/roles/update/permission',
+    method: 'post',
+    data: params,
+    mock: true,
+    mockApipostId: '693374'
+  })
+};

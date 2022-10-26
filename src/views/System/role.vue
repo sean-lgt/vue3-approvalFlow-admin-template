@@ -56,7 +56,7 @@
         layout="prev, pager, next"
         :total="pager.total"
         :page-size="pager.pageSize"
-        @current-change="handleCurrentChange"
+        @current-change="handleCurrentPageChange"
       />
     </div>
     <!-- 添加role弹窗 -->
@@ -189,6 +189,12 @@ const fetchRoleList = async () => {
 }
 
 fetchRoleList()
+
+// 点击分页进行切换
+const handleCurrentPageChange = (pageNum) => {
+  pager.pageNum = pageNum
+  fetchRoleList()
+}
 
 // 点击查询
 const handleQuery = () => {

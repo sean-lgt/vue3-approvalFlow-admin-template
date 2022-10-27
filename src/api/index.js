@@ -168,3 +168,25 @@ export const deptListApi = (params = {}) => {
     mockApipostId: 'f69edb'
   })
 }
+
+// 获取所有用户列表
+export const userAllListApi = (params = {}) => {
+  return request({
+    url: "/users/all/list",
+    method: 'get',
+    data: params,
+    mock: true,
+    mockApipostId: '185d7f'
+  })
+}
+
+// 对部门进行操作
+export const deptOperateApi = (params = {}) => {
+  return request({
+    url: '/dept/operate',
+    method: 'post',
+    data: params,
+    mock: true,
+    mockApipostId: '7a1edc'
+  })
+};

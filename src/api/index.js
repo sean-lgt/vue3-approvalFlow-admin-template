@@ -156,3 +156,15 @@ export const rolePermissionApi = (params = {}) => {
     mockApipostId: '693374'
   })
 };
+
+
+// 部门列表数据，可查询
+export const deptListApi = (params = {}) => {
+  return request({
+    url: '/dept/list',
+    method: 'get',
+    data: params,
+    mock: true,
+    mockApipostId: 'f69edb'
+  })
+}

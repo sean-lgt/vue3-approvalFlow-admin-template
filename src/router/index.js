@@ -41,6 +41,14 @@ const routes = [{
       },
       component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/role.vue')
     },
+    {
+      path: '/system/dept',
+      name: 'systemDept',
+      meta: {
+        title: '部门管理',
+      },
+      component: () => import( /* webpackChunkName: "homeWelcome" */ '@/views/System/dept.vue')
+    },
   ],
 }, {
   path: '/login',

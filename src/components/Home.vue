@@ -93,7 +93,7 @@ const userInfo = computed(() => store.state.userInfo)
 // 点击退出
 const handleLogout = (key) => {
   if (key == 'email') return
-  store.commit('saveUserInfo', '')
+  store.commit('saveUserInfo', {})
   userInfo.value = null
   router.push('/login')
 }
@@ -133,6 +133,8 @@ const fetchPermissionMenuList = async () => {
     const resultList = await permissionMenuListApi()
     console.log('🚀【获取菜单权限列表数据~~~】', resultList)
     userMenu.value = resultList.menuList
+    store.commit('saveMenuList', resultList.menuList)
+    store.commit('saveActionList', resultList.actionList)
   } catch (error) {
     console.error('获取菜单列表数据错误', error)
   }

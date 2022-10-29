@@ -61,11 +61,15 @@
     </div>
   </div>
 </template>
-
+<script>
+export default {
+  name: 'home'
+}
+</script>
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import TreeMenu from './TreeMenu.vue'
 import BreadCrumb from './BreadCrumb.vue'
 import {
@@ -85,6 +89,7 @@ import {
 
 const store = useStore()
 const router = useRouter()
+const route = useRoute()
 
 const isCollapse = ref(false)
 
@@ -109,6 +114,7 @@ const fetchNoticeCount = async () => {
   try {
     const count = await noticeCountApi()
     noticeCount.value = count
+    console.log('🚀【此处打印route】', router)
   } catch (error) {
     console.error('获取通知数量错误', error)
   }

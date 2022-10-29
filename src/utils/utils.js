@@ -22,5 +22,36 @@ export default {
       }
     }
     return fmt;
+  },
+  /**
+   * @description: 递归遍历组装动态路由
+   * @return {*}
+   * @param {*} menuList 菜单列表
+   */
+  generatorRoutes(menuList) {
+    let routes = []
+    const deepList = (list) => {
+      while (list.length) {
+        const item = list.pop() //出栈
+        if (item.action) {
+          // 有action 按钮权限 说明是最有一级菜单
+          routes.push({
+            name: item.component,
+            path: item.path,
+            meta: {
+              title: item.menuName
+            },
+            component: item.component
+          })
+        }
+
+        if (item.children && !item.action) {
+          // 递归遍历
+          deepList(item.children)
+        }
+      }
+    }
+    deepList(JSON.parse(JSON.stringify(menuList))) // 深拷贝递归
+    return routes
   }
 }

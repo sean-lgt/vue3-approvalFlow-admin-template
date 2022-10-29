@@ -31,11 +31,12 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { UserFilled, View } from '@element-plus/icons-vue'
-import { apiLogin } from '../../api'
+import { apiLogin, permissionMenuListApi } from '../../api'
+import utils from '../../utils/utils'
 
 const router = useRouter()
 const store = useStore()
@@ -73,11 +74,28 @@ const handleLogin = async (formEl) => {
       console.log('submit!')
       const loginUserInfo = await apiLogin(userInfo)
       store.commit('saveUserInfo', loginUserInfo)
+      await loadAsyncRoutes() // 登录有刷新动态路由
       // console.log('🚀【loginResult】', loginResult)
       router.push('/welcome')
     } else {
       console.log('error submit!', fields)
     }
+  })
+}
+// 加载动态路由
+const loadAsyncRoutes = async () => {
+  const { menuList } = await permissionMenuListApi()
+  const result = utils.generatorRoutes(menuList) //组装动态路由
+  result.forEach((route) => {
+    const path = `../views${route.component}.vue`
+    // 动态添加路由
+    //bug：使用动态路由报错 The above dynamic import cannot be analyzed by Vite.
+    // router.addRoute('home', { ...route, component: () => import(path) })
+    router.addRoute('home', {
+      ...route,
+      component: () =>
+        defineAsyncComponent(() => import(/* @vite-ignore */ path))
+    })
   })
 }
 </script>

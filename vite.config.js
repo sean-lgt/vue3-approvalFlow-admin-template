@@ -6,6 +6,8 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+// fix: The above dynamic import cannot be analyzed by Vite.
+// import dynamicImportVars from '@rollup/plugin-dynamic-import-vars'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -32,6 +34,9 @@ export default defineConfig({
     Icons({
       autoInstall: true,
     }),
+    // dynamicImportVars({
+    //   // options
+    // })
   ],
   resolve: {
     alias: {

@@ -201,3 +201,15 @@ export const deptOperateApi = (params = {}) => {
     mockApipostId: '7a1edc'
   })
 };
+
+
+// 获取休假申请列表
+export const leaveListApi = (params = {}) => {
+  return request({
+    url: '/leave/list',
+    method: 'get',
+    data: params,
+    mock: true,
+    mockApipostId: '99f01a'
+  })
+}

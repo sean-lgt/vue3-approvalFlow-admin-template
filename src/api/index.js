@@ -46,6 +46,17 @@ export const menuListApi = (params = {}) => {
   })
 }
 
+// 获取权限菜单列表
+export const permissionMenuListApi = (params = {}) => {
+  return request({
+    url: '/users/getPermissionList',
+    method: 'get',
+    data: params,
+    mock: false,
+    mockApipostId: '22df56'
+  })
+}
+
 // 获取用户列表
 export const userListApi = (params = {}) => {
   return request({

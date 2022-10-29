@@ -77,7 +77,11 @@ import {
   Connection
 } from '@element-plus/icons-vue'
 
-import { noticeCountApi, menuListApi } from '../api/index'
+import {
+  noticeCountApi,
+  menuListApi,
+  permissionMenuListApi
+} from '../api/index'
 
 const store = useStore()
 const router = useRouter()
@@ -122,7 +126,18 @@ const fetchMenuList = async () => {
     console.error('获取菜单列表数据错误', error)
   }
 }
-fetchMenuList()
+// fetchMenuList()
+
+const fetchPermissionMenuList = async () => {
+  try {
+    const resultList = await permissionMenuListApi()
+    console.log('🚀【获取菜单权限列表数据~~~】', resultList)
+    userMenu.value = resultList.menuList
+  } catch (error) {
+    console.error('获取菜单列表数据错误', error)
+  }
+}
+fetchPermissionMenuList()
 </script>
 
 <style lang="scss">

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-manage">
+  <div class="leave-manage">
     <div class="query-form">
       <el-form ref="formRef" inline :model="queryForm">
         <el-form-item prop="applyState">
@@ -55,15 +55,75 @@
         @current-change="handleCurrentPageChange"
       ></el-pagination>
     </div>
+    <!-- 新增申请弹窗 -->
+    <el-dialog
+      v-model="showAddDialog"
+      title="休假申请"
+      destroy-on-close
+      @close="handleResetAddDialog"
+    >
+      <el-form
+        :model="leaveForm"
+        ref="leaveFormRef"
+        :rules="rules"
+        label-width="120px"
+      >
+        <el-form-item label="休假类型" prop="applyType">
+          <el-select v-model="leaveForm.applyType">
+            <el-option :value="1" label="事假"></el-option>
+            <el-option :value="2" label="调休"></el-option>
+            <el-option :value="3" label="病假"></el-option>
+            <el-option :value="4" label="年假"></el-option>
+          </el-select>
+        </el-form-item>
+        <div class="date-wrap">
+          <el-form-item prop="startTime" label="休假时间">
+            <el-date-picker
+              style="margin: 0"
+              v-model="leaveForm.startTime"
+              placeholder="选择开始日期"
+              @change="(val) => onChangeDate('startTime', val)"
+            />
+          </el-form-item>
+          <div class="divider">-</div>
+          <el-form-item prop="endTime" label-width="20px">
+            <el-date-picker
+              style="margin: 0"
+              v-model="leaveForm.endTime"
+              placeholder="选择结束日期"
+              @change="(val) => onChangeDate('endTime', val)"
+            />
+          </el-form-item>
+        </div>
+        <el-form-item label="休假时差">
+          {{ leaveForm.leaveDay }} 天
+        </el-form-item>
+        <el-form-item label="休假原因" prop="reasons">
+          <el-input
+            type="textarea"
+            rows="4"
+            v-model="leaveForm.reasons"
+            placeholder="请输入休假原因"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showAddDialog = false">取消</el-button>
+        <el-button type="primary" @click="onSubmitForm">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { reactive, ref, onMounted, toRaw } from 'vue'
-import { leaveListApi } from './../../api/index'
+import { leaveListApi, leaveOperateApi } from './../../api/index'
+import 'element-plus/es/components/message/style/css'
 import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
 import utils from '../../utils/utils'
-import 'element-plus/es/components/message/style/css'
+import Storage from '../../utils/storage'
+
+const storage = new Storage()
 
 const formRef = ref()
 // 查询表单
@@ -165,6 +225,120 @@ const handleCurrentPageChange = (current) => {
   pager.pageNum = current
   fetchLeaveList()
 }
+
+// 创建申请相关操作
+const showAddDialog = ref(false)
+const leaveFormRef = ref()
+const action = ref('add')
+const leaveForm = reactive({
+  startTime: '',
+  endTime: '',
+  reasons: '',
+  applyType: 1,
+  leaveDay: 0 // 计算休假时长, 不需要传后端
+})
+
+const rules = {
+  startTime: {
+    required: true,
+    message: '起始日期不能为空',
+    trigger: ['blur', 'change']
+  },
+  endTime: {
+    required: true,
+    message: '结束日期不能为空',
+    trigger: ['blur', 'change']
+  },
+  reasons: { required: true, message: '休假原因不能为空', trigger: 'blur' },
+  applyType: {
+    required: true,
+    message: '休假类型不能为空',
+    trigger: 'blur'
+  }
+}
+
+// 监听日期选择改变
+const onChangeDate = (dateKey, val) => {
+  const { startTime, endTime } = leaveForm
+  if (startTime > endTime && endTime) {
+    leaveForm[dateKey] = ''
+    leaveForm.leaveDay = 0
+    ElMessage({
+      message: '开始时间不能大于借宿时间',
+      grouping: true,
+      type: 'error'
+    })
+    return
+  }
+  if (startTime && endTime) {
+    leaveForm.leaveDay = (endTime - startTime) / (24 * 60 * 60 * 1000) + 1 //计算请假时长
+  }
+}
+
+// 关闭弹框时重置表单项
+const handleResetAddDialog = () => {
+  if (!leaveFormRef.value) return
+  leaveFormRef.value.resetFields()
+}
+
+const handleCreate = () => {
+  action.value = 'add'
+  showAddDialog.value = true
+}
+
+// 点击确定提交
+const onSubmitForm = async () => {
+  if (!leaveFormRef.value) return
+  await leaveFormRef.value.validate(async (valid, fields) => {
+    if (valid) {
+      //  校验成功 可以提交
+      const { userEmail, userId, userName } = storage.getItem('userInfo')
+      const params = { ...toRaw(leaveForm), userEmail, userId, userName }
+      params.action = action.value
+      params.leaveTime =
+        (leaveForm.endTime - leaveForm.startTime) / (24 * 60 * 60 * 1000) +
+        1 +
+        '天'
+      const submitResult = await leaveOperateApi(params)
+      ElMessage({
+        message: '提交成功',
+        grouping: true,
+        type: 'success'
+      })
+      fetchLeaveList() //重新请求列表
+      showAddDialog.value = false
+      leaveFormRef.value.resetFields() //清空原表单
+    } else {
+      console.log('error submit!', fields)
+      ElMessage({
+        message: '请先完成表单',
+        grouping: true,
+        type: 'error'
+      })
+    }
+  })
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.leave-manage {
+  .date-wrap {
+    display: flex;
+    justify-content: left;
+    position: relative;
+    .el-form-item {
+      width: 280px;
+    }
+    .divider {
+      position: absolute;
+      left: 288px;
+      top: 0px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      flex-basis: 28px;
+    }
+  }
+}
+</style>

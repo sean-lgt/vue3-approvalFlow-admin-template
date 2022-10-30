@@ -213,3 +213,14 @@ export const leaveListApi = (params = {}) => {
     mockApipostId: '99f01a'
   })
 }
+
+// 对休假申请进行操作
+export const leaveOperateApi = (params = {}) => {
+  return request({
+    url: '/leave/operate',
+    method: 'post',
+    data: params,
+    mock: true,
+    mockApipostId: 'c2012d'
+  })
+};

@@ -112,11 +112,47 @@
         <el-button type="primary" @click="onSubmitForm">确定</el-button>
       </template>
     </el-dialog>
+    <!-- 查看弹窗 -->
+    <el-dialog title="审批详情" v-model="showDetailDialog" destroy-on-close>
+      <el-steps :active="calcCurrentDetail.currentStep" align-center>
+        <el-step
+          v-for="step in calcCurrentDetail.steps"
+          :key="step"
+          :title="step"
+        ></el-step>
+      </el-steps>
+      <el-form label-width="120px">
+        <el-form-item class="detail-dialog-item" label="休假类型:">
+          {{ calcCurrentDetail.applyType }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="休假时间:">
+          {{ calcCurrentDetail.leaveTimeArea }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="休假时长:">
+          {{ calcCurrentDetail.leaveTime }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="休假原因:">
+          {{ calcCurrentDetail.reasons }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="审批状态:">
+          {{ calcCurrentDetail.applyStateText }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="审批人:">
+          {{ calcCurrentDetail.auditUsers }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="当前审批人:">
+          {{ calcCurrentDetail.curAuditUserName }}
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showDetailDialog = false">关闭</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, toRaw } from 'vue'
+import { reactive, ref, onMounted, toRaw, computed } from 'vue'
 import { leaveListApi, leaveOperateApi } from './../../api/index'
 import 'element-plus/es/components/message/style/css'
 import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
@@ -317,6 +353,77 @@ const onSubmitForm = async () => {
       })
     }
   })
+}
+
+const applyStateMap = {
+  审批通过: ['待审批', '审批中', '审批通过'],
+  审批拒绝: ['待审批', '审批中', '审批拒绝'],
+  残忍拒绝: ['待审批', '审批中', '残忍拒绝'],
+  作废: ['待审批', '审批中', '作废']
+}
+
+// 点击查看详情
+const showDetailDialog = ref(false)
+const currentDetail = reactive({})
+const calcCurrentDetail = computed(() => {
+  const {
+    applyType,
+    leaveTime,
+    reasons,
+    applyState,
+    auditUsers,
+    startTime,
+    endTime,
+    curAuditUserName
+  } = currentDetail
+  const result = {}
+  result.auditUsers = auditUsers
+  result.curAuditUserName = curAuditUserName
+  result.leaveTime = leaveTime
+  result.reasons = reasons
+  result.leaveTimeArea =
+    utils.formateDate(new Date(startTime), 'yyyy-MM-dd') +
+    ' 至 ' +
+    utils.formateDate(new Date(endTime), 'yyyy-MM-dd')
+  result.applyType = { 1: '事假', 2: '调休', 3: '年假' }[applyType]
+  result.applyStateText = {
+    1: '待审批',
+    2: '审批中',
+    3: '审批拒绝',
+    4: '审批通过',
+    5: '作废'
+  }[applyState]
+  if (result.applyStateText === '审批拒绝') {
+    result.steps = applyStateMap['审批拒绝']
+  } else if (result.applyState === '作废') {
+    result.steps = applyStateMap['作废']
+  } else {
+    result.steps = applyStateMap['审批通过']
+  }
+  result.currentStep =
+    result.steps.findIndex((it) => it === result.applyStateText) + 1
+  return result
+})
+
+// 点击查看
+const handlePreview = (row) => {
+  showDetailDialog.value = true
+  Object.assign(currentDetail, toRaw(row))
+}
+
+// 点击作废
+const handleInvalid = async (row) => {
+  action.value = 'delete'
+  const params = {}
+  params.action = action.value
+  params._id = row._id
+  const submitResult = await leaveOperateApi(params)
+  ElMessage({
+    message: '提交成功',
+    grouping: true,
+    type: 'success'
+  })
+  fetchLeaveList() //重新请求列表
 }
 </script>
 

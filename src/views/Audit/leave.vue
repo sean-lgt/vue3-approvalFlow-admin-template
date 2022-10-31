@@ -300,7 +300,7 @@ const onChangeDate = (dateKey, val) => {
     leaveForm[dateKey] = ''
     leaveForm.leaveDay = 0
     ElMessage({
-      message: '开始时间不能大于借宿时间',
+      message: '开始时间不能大于结束时间',
       grouping: true,
       type: 'error'
     })
@@ -315,10 +315,12 @@ const onChangeDate = (dateKey, val) => {
 const handleResetAddDialog = () => {
   if (!leaveFormRef.value) return
   leaveFormRef.value.resetFields()
+  leaveForm.leaveDay = 0
 }
 
 const handleCreate = () => {
   action.value = 'add'
+  leaveForm.leaveDay = 0
   showAddDialog.value = true
 }
 

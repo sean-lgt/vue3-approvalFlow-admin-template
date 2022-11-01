@@ -31,9 +31,10 @@
         </div>
         <div class="user-info">
           <el-badge
-            :is-dot="noticeCount > 0 ? true : false"
+            :is-dot="globalNoticeCount > 0 ? true : false"
             class="notice"
             type="danger"
+            @click="handleGoApprove"
           >
             <el-icon><Bell /></el-icon>
           </el-badge>
@@ -67,7 +68,7 @@ export default {
 }
 </script>
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import TreeMenu from './TreeMenu.vue'
@@ -119,7 +120,18 @@ const fetchNoticeCount = async () => {
     console.error('获取通知数量错误', error)
   }
 }
-fetchNoticeCount()
+// fetchNoticeCount()
+const globalNoticeCount = computed(() => {
+  //返回的是ref对象
+  return store.state.leaveCount
+})
+onMounted(() => {
+  store.dispatch('getLeaveCount') //获取通知数量
+})
+
+const handleGoApprove = () => {
+  router.push('/audit/approve')
+}
 
 // 获取菜单列表
 let userMenu = ref([])

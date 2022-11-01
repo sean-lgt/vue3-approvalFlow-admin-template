@@ -50,18 +50,76 @@
         @current-change="handleCurrentPageChange"
       ></el-pagination>
     </div>
+    <!-- 查看弹窗 -->
+    <el-dialog
+      title="审批详情"
+      v-model="showDetailDialog"
+      destroy-on-close
+      @close="handleResetAuditForm"
+    >
+      <el-form
+        label-width="120px"
+        :model="auditForm"
+        ref="auditFormRef"
+        :rules="rules"
+      >
+        <el-form-item class="detail-dialog-item" label="休假类型:">
+          {{ calcCurrentDetail.applyType }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="休假时间:">
+          {{ calcCurrentDetail.leaveTimeArea }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="休假时长:">
+          {{ calcCurrentDetail.leaveTime }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="休假原因:">
+          {{ calcCurrentDetail.reasons }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="审批状态:">
+          {{ calcCurrentDetail.applyStateText }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="审批人:">
+          {{ calcCurrentDetail.auditUsers }}
+        </el-form-item>
+        <el-form-item class="detail-dialog-item" label="当前审批人:">
+          {{ calcCurrentDetail.curAuditUserName }}
+        </el-form-item>
+        <el-form-item label="请输入审核备注" prop="remark">
+          <el-input
+            type="textarea"
+            placeholder="请输入审核备注"
+            rows="4"
+            v-model="auditForm.remark"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="onSubmit('pass')" type="primary">审核通过</el-button>
+        <el-button @click="onSubmit('refuse')" type="danger">驳回</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { reactive, ref, onMounted, toRaw, computed } from 'vue'
-import { leaveListApi, leaveOperateApi } from './../../api/index'
+import { useStore } from 'vuex'
+import { leaveListApi, approveOperateApi } from './../../api/index'
 import 'element-plus/es/components/message/style/css'
 import { ElMessage } from 'element-plus' // 引入mess组件时需要引入样式
 import utils from '../../utils/utils'
 import Storage from '../../utils/storage'
 
 const storage = new Storage()
+
+const store = useStore()
+
+const applyStateMap = {
+  审批通过: ['待审批', '审批中', '审批通过'],
+  审批拒绝: ['待审批', '审批中', '审批拒绝'],
+  残忍拒绝: ['待审批', '审批中', '残忍拒绝'],
+  作废: ['待审批', '审批中', '作废']
+}
 
 const formRef = ref()
 // 查询表单
@@ -168,6 +226,79 @@ const handleQueryReset = () => {
 const handleCurrentPageChange = (current) => {
   pager.pageNum = current
   fetchLeaveList()
+}
+
+// 重置表单
+const action = ref('')
+const showDetailDialog = ref(false)
+const auditFormRef = ref()
+const currentDetail = reactive({})
+const auditForm = reactive({ remark: '' })
+const calcCurrentDetail = computed(() => {
+  const {
+    applyType,
+    leaveTime,
+    reasons,
+    applyState,
+    auditUsers,
+    startTime,
+    endTime,
+    curAuditUserName
+  } = currentDetail
+  const result = {}
+  result.auditUsers = auditUsers
+  result.curAuditUserName = curAuditUserName
+  result.leaveTime = leaveTime
+  result.reasons = reasons
+  result.leaveTimeArea =
+    utils.formateDate(new Date(startTime), 'yyyy-MM-dd') +
+    ' 至 ' +
+    utils.formateDate(new Date(endTime), 'yyyy-MM-dd')
+  result.applyType = { 1: '事假', 2: '调休', 3: '年假' }[applyType]
+  result.applyStateText = {
+    1: '待审批',
+    2: '审批中',
+    3: '审批拒绝',
+    4: '审批通过',
+    5: '作废'
+  }[applyState]
+  if (result.applyStateText === '审批拒绝') {
+    result.steps = applyStateMap['审批拒绝']
+  } else if (result.applyState === '作废') {
+    result.steps = applyStateMap['作废']
+  } else {
+    result.steps = applyStateMap['审批通过']
+  }
+  result.currentStep =
+    result.steps.findIndex((it) => it === result.applyStateText) + 1
+  return result
+})
+
+const handleResetAuditForm = () => {
+  if (!auditFormRef.value) return
+  auditFormRef.value.resetFields()
+}
+
+const handleAudit = (row) => {
+  showDetailDialog.value = true
+  Object.assign(currentDetail, toRaw(row))
+}
+
+const onSubmit = async (type) => {
+  action.value = type
+  const params = {}
+  params.remark = auditForm.remark
+  params.action = action.value
+  params._id = currentDetail._id
+  const submitResult = await approveOperateApi(params)
+  ElMessage({
+    message: '提交成功',
+    grouping: true,
+    type: 'success'
+  })
+  fetchLeaveList() //重新请求列表
+  store.dispatch('getLeaveCount') //获取通知数量
+  showDetailDialog.value = false
 }
 </script>
 

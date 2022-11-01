@@ -30,7 +30,7 @@ export const noticeCountApi = () => {
     url: '/leave/count',
     method: 'get',
     data: {},
-    mock: true,
+    mock: false,
     mockApipostId: 'd95875'
   })
 }
@@ -223,4 +223,15 @@ export const leaveOperateApi = (params = {}) => {
     mock: false,
     mockApipostId: 'c2012d'
   })
-};
+}
+
+// 对休假申请进行审核操作
+export const approveOperateApi = (params = {}) => {
+  return request({
+    url: '/leave/approve',
+    method: 'post',
+    data: params,
+    mock: false,
+    mockApipostId: '449de0'
+  })
+}

@@ -1,0 +1,14 @@
+{
+  "name": "cli-plugin-study",
+  "version": "1.0.0",
+  "description": "cli 相关插件学习",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^9.4.1"
+  }
+}

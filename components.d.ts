@@ -42,5 +42,6 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TreeMenu: typeof import('./src/components/TreeMenu.vue')['default']
+    VInput: typeof import('./src/components/VInput.vue')['default']
   }
 }

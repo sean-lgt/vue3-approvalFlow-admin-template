@@ -1,7 +1,8 @@
 <template>
   <div class="user-manage">
     <div class="query-form">
-      <el-form ref="formRef" inline :model="user">
+      <!-- 使用封装自定义组件 -->
+      <!-- <el-form ref="formRef" inline :model="user">
         <el-form-item prop="userId">
           <el-input v-model="user.userId" placeholder="请输入用户ID" />
         </el-form-item>
@@ -22,7 +23,12 @@
           >
           <el-button @click="handleReset">重置</el-button>
         </el-form-item>
-      </el-form>
+      </el-form> -->
+      <query-form
+        :form="form"
+        v-model="user"
+        @handleQuery="handleQuery"
+      ></query-form>
     </div>
     <div class="base-table">
       <div class="action">
@@ -213,7 +219,7 @@ const fetchUserList = async () => {
 fetchUserList()
 
 // 点击查询
-const handleQuery = () => {
+const handleQuery = (values) => {
   pager.pageNum = 1
   pager.pageSize = 10
   pager.total = 0

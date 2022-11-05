@@ -4,6 +4,9 @@ import App from './App.vue'
 import router from './router' //引入路由
 import store from './store/index' // vuex状态管理
 import projectConfig from './config'
+
+// 全局引入自定义组件
+import QueryForm from './packages/QueryForm'
 // 全局引入
 // import ElementPlus from 'element-plus'
 // import 'element-plus/dist/index.css'
@@ -41,4 +44,4 @@ app.directive('has', {
 })
 
 
-app.use(router).use(store).mount('#app')
+app.use(router).use(store).use(QueryForm).mount('#app')

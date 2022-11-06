@@ -30,9 +30,8 @@
         @handleQuery="handleQuery"
       ></query-form>
     </div>
-    <div class="base-table">
+    <!-- <div class="base-table">
       <div class="action">
-        <!-- 使用自定义指令控制按钮权限 -->
         <el-button
           type="primary"
           @click="handleCreate"
@@ -80,7 +79,24 @@
         :page-size="pager.pageSize"
         @current-change="handleCurrentPageChange"
       ></el-pagination>
-    </div>
+    </div> -->
+
+    <!-- 封装basetable -->
+    <base-table
+      :columns="columns"
+      :data="userList"
+      :pager="pager"
+      @selection-change="handleSelectionChange"
+      @handleAction="handleAction"
+      @handleCurrentPageChange="handleCurrentPageChange"
+    >
+      <template #action>
+        <!-- 使用自定义指令控制按钮权限 -->
+        <el-button type="primary" @click="handleCreate">新增</el-button>
+        <el-button type="danger" @click="handlePatchDel">批量删除</el-button>
+      </template>
+    </base-table>
+
     <!-- 弹窗 -->
     <el-dialog title="用户新增" v-model="showModal">
       <el-form
@@ -182,7 +198,7 @@ const formRef = ref()
 const user = ref({
   userId: '',
   userName: '',
-  state: 1
+  state: 0
 })
 
 // 查询表单相关配置
@@ -449,6 +465,9 @@ const handleEdit = (editItem) => {
 // 定义动态表格-格式
 const columns = reactive([
   {
+    type: 'selection'
+  },
+  {
     label: '用户ID',
     prop: 'userId'
   },
@@ -496,8 +515,32 @@ const columns = reactive([
     formatter: (row, column, value) => {
       return utils.formateDate(new Date(value))
     }
+  },
+  {
+    type: 'action',
+    label: '操作',
+    width: 150,
+    list: [
+      {
+        text: '编辑',
+        type: 'primary'
+      },
+      {
+        text: '删除',
+        type: 'danger'
+      }
+    ]
   }
 ])
+
+// 表格操作列
+const handleAction = (option) => {
+  if (option.index == 0) {
+    handleEdit(option.row)
+  } else if (option.index == 1) {
+    handleDel(option.row)
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

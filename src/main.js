@@ -7,6 +7,7 @@ import projectConfig from './config'
 
 // 全局引入自定义组件
 import QueryForm from './packages/QueryForm'
+import BaseTable from './packages/BaseTable'
 // 全局引入
 // import ElementPlus from 'element-plus'
 // import 'element-plus/dist/index.css'
@@ -44,4 +45,4 @@ app.directive('has', {
 })
 
 
-app.use(router).use(store).use(QueryForm).mount('#app')
+app.use(router).use(store).use(QueryForm).use(BaseTable).mount('#app')

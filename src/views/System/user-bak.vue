@@ -2,7 +2,7 @@
   <div class="user-manage">
     <div class="query-form">
       <!-- 使用封装自定义组件 -->
-      <!-- <el-form ref="formRef" inline :model="user">
+      <el-form ref="formRef" inline :model="user">
         <el-form-item prop="userId">
           <el-input v-model="user.userId" placeholder="请输入用户ID" />
         </el-form-item>
@@ -23,12 +23,12 @@
           >
           <el-button @click="handleReset">重置</el-button>
         </el-form-item>
-      </el-form> -->
-      <query-form
+      </el-form>
+      <!-- <query-form
         :form="form"
         v-model="user"
         @handleQuery="handleQuery"
-      ></query-form>
+      ></query-form> -->
     </div>
     <div class="base-table">
       <div class="action">
@@ -172,58 +172,11 @@ import 'element-plus/es/components/message/style/css'
 
 const formRef = ref()
 // 查询表单
-// const user = reactive({
-//   userId: '',
-//   userName: '',
-//   state: 1
-// })
-
-// 使用v-model 需要ref更改值
-const user = ref({
+const user = reactive({
   userId: '',
   userName: '',
   state: 1
 })
-
-// 查询表单相关配置
-const form = [
-  {
-    type: 'input',
-    label: '用户ID',
-    model: 'userId',
-    placeholder: '请输入用户ID'
-  },
-  {
-    type: 'input',
-    label: '用户名称',
-    model: 'userName',
-    placeholder: '请输入用户名称'
-  },
-  {
-    type: 'select',
-    label: '状态',
-    model: 'state',
-    placeholder: '请输入选择状态',
-    options: [
-      {
-        label: '所有',
-        value: 0
-      },
-      {
-        label: '在职',
-        value: 1
-      },
-      {
-        label: '离职',
-        value: 2
-      },
-      {
-        label: '试用期',
-        value: 3
-      }
-    ]
-  }
-]
 
 //分页数据
 const pager = reactive({
@@ -251,8 +204,8 @@ let userList = ref([
   }
 ])
 
-const fetchUserList = async (queryParams) => {
-  let params = { ...user.value, ...pager }
+const fetchUserList = async () => {
+  let params = { ...user, ...pager }
   try {
     const { list, page } = await userListApi(params)
     userList.value = list //赋值
@@ -271,7 +224,7 @@ const handleQuery = (values) => {
   pager.pageNum = 1
   pager.pageSize = 10
   pager.total = 0
-  fetchUserList({ ...values })
+  fetchUserList()
 }
 
 // 重置查询

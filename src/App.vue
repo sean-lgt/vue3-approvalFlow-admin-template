@@ -17,18 +17,18 @@ const handleSubmit = (e) => {
 </script>
 
 <template>
-  <!-- <el-config-provider :locale="locale">
+  <el-config-provider :locale="locale">
     <router-view></router-view>
-  </el-config-provider> -->
+  </el-config-provider>
 
   <!-- 测试v-model -->
-  <div>
+  <!-- <div>
     <v-input
       v-model="userName"
       v-model:title="title"
       @handleSubmit="handleSubmit"
     ></v-input>
-  </div>
+  </div> -->
 </template>
 
 <style lang="scss">

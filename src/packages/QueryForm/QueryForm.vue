@@ -1,7 +1,11 @@
 <template>
   <el-form ref="formRef" inline :model="formModel">
     <template v-for="(item, index) in form" :key="index">
-      <FormItem :item="item"></FormItem>
+      <FormItem
+        :item="item"
+        v-model="formModel[item.model]"
+        v-bind="item"
+      ></FormItem>
     </template>
 
     <!-- <el-form-item prop="userId">
@@ -19,9 +23,7 @@
       </el-select>
     </el-form-item> -->
     <el-form-item>
-      <el-button type="primary" @click="handleQuery" v-has="'user-query'"
-        >查询</el-button
-      >
+      <el-button type="primary" @click="handleQuery">查询</el-button>
       <el-button @click="handleResetForm">重置</el-button>
     </el-form-item>
   </el-form>
@@ -39,7 +41,7 @@
  * ]
  *
  */
-import { defineOptions, defineProps, ref, reactive } from 'vue'
+import { defineProps, defineEmits, ref, reactive } from 'vue'
 import FormItem from './FormItem.vue'
 
 defineOptions({
@@ -51,11 +53,20 @@ const props = defineProps({
   form: {
     type: Array,
     default: () => []
+  },
+  // v-model 语法糖
+  modelValue: {
+    type: Array,
+    default: () => []
   }
 })
 
+const emit = defineEmits(['update:modelValue', 'handleQuery'])
+
 const formRef = ref()
-const formModel = reactive({})
+const formModel = reactive({
+  ...props.modelValue
+})
 
 // 重置表单
 const handleResetForm = () => {
@@ -65,7 +76,12 @@ const handleResetForm = () => {
 
 // 点击查询
 const handleQuery = () => {
+  console.log('🚀【modelValue】', props.modelValue)
   // TODO:
+  // emit('handleQuery', { userId: 888, userName: 'jack' })
+  // v-model 语法糖
+  emit('update:modelValue', { ...formModel })
+  emit('handleQuery', { ...formModel })
 }
 </script>
 

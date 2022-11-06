@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
+// 在 <script setup> 中可使用 defineOptions 宏，以便在 <script setup> 中使用 Options API
+import DefineOptions from 'unplugin-vue-define-options/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -13,6 +15,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 export default defineConfig({
   plugins: [
     vue(),
+    DefineOptions(),
     AutoImport({
       resolvers: [
         ElementPlusResolver(),

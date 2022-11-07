@@ -45,10 +45,12 @@ service.interceptors.response.use((res) => {
     return Promise.resolve(data)
   } else if (code === 500001) {
     ElMessage.error(TOKEN_INVALID)
+    // 清空缓存数据
+    storage.clearItem('userInfo')
     setTimeout(() => {
       // 调回登录页
       router.push('/login')
-    }, 1500)
+    }, 1000)
     return Promise.reject(TOKEN_INVALID)
   } else {
     ElMessage.error(msg || NETWORK_ERROR)

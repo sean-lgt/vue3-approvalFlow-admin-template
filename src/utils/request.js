@@ -43,13 +43,17 @@ service.interceptors.response.use((res) => {
   const { code, data, msg } = res.data
   if (code === 200) {
     return Promise.resolve(data)
-  } else if (code === 500001) {
+  } else if (code === 50001) {
     ElMessage.error(TOKEN_INVALID)
     // 清空缓存数据
     storage.clearItem('userInfo')
     setTimeout(() => {
+      console.log('🚀【window】', window.$_router_);
       // 调回登录页
-      router.push('/login')
+      // bug:es6模块循环引用的问题
+      // https://www.jianshu.com/p/cdd532429387
+      router && router.push('/login')
+      // window.location.reload(true)
     }, 1000)
     return Promise.reject(TOKEN_INVALID)
   } else {

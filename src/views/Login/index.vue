@@ -87,10 +87,11 @@ const loadAsyncRoutes = async () => {
   const { menuList } = await permissionMenuListApi()
   const result = utils.generatorRoutes(menuList) //组装动态路由
   result.forEach((route) => {
-    const path = `../views${route.component}.vue`
+    const path = `../../views${route.component}.vue`
     // 动态添加路由
     //bug：使用动态路由报错 The above dynamic import cannot be analyzed by Vite.
     // router.addRoute('home', { ...route, component: () => import(path) })
+
     router.addRoute('home', {
       ...route,
       component: () =>

@@ -33,7 +33,7 @@ export default {
     const deepList = (list) => {
       while (list.length) {
         const item = list.pop() //出栈
-        if (item.action) {
+        if (!item.icon) {
           // 有action 按钮权限 说明是最有一级菜单
           routes.push({
             name: item.component,
@@ -45,7 +45,7 @@ export default {
           })
         }
 
-        if (item.children && !item.action) {
+        if (item.children && item.icon) {
           // 递归遍历
           deepList(item.children)
         }

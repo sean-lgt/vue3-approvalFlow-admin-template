@@ -158,17 +158,23 @@ const checkPermission = (path) => {
 }
 
 // 导航守卫
-// router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
+  const isLogin = tokenValidate() // 判断是否已经登录
+  if (to.path !== "/login" && !isLogin) {
+    next('/login')
+  } else {
+    next()
+  }
 
-//   if (checkPermission(to.path)) {
-//     document.title = to.meta.title;
-//     next()
-//   } else {
-//     document.title = to.meta.title;
-//     next()
-//     // next('/404')
-//   }
-// })
+  // if (checkPermission(to.path)) {
+  //   document.title = to.meta.title;
+  //   next()
+  // } else {
+  //   document.title = to.meta.title;
+  //   next()
+  //   // next('/404')
+  // }
+})
 
 
 

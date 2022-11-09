@@ -8,12 +8,13 @@
       </div>
       <!-- 导航菜单 -->
       <el-menu
-        default-active="2"
+        :default-active="activePath"
         class="nav-menu"
         background-color="#001529"
         text-color="#fff"
         :collapse="isCollapse"
         router
+        ref="menuRef"
       >
         <TreeMenu :userMenu="userMenu" />
       </el-menu>
@@ -125,8 +126,11 @@ const globalNoticeCount = computed(() => {
   //返回的是ref对象
   return store.state.leaveCount
 })
+const activePath = ref('')
 onMounted(() => {
   store.dispatch('getLeaveCount') //获取通知数量
+  // 设置菜单激活项
+  activePath.value = route.path
 })
 
 const handleGoApprove = () => {

@@ -94,7 +94,10 @@ const loadAsyncRoutes = async () => {
     router.addRoute('home', {
       ...route,
       component: () =>
-        defineAsyncComponent(() => import(/* @vite-ignore */ path))
+        defineAsyncComponent(() =>
+          // vue-router的 component 字段返回一个 Promise并将的组件作为value传入resolve
+          Promise.resolve(import(/* @vite-ignore */ path))
+        )
     })
   })
 }

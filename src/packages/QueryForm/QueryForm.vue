@@ -56,8 +56,8 @@ const props = defineProps({
   },
   // v-model 语法糖
   modelValue: {
-    type: Array,
-    default: () => []
+    type: Object,
+    default: () => {}
   }
 })
 

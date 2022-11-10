@@ -25,7 +25,7 @@ defineOptions({
 const props = defineProps({
   // 子组件接收父组件传递过来的值
   item: {
-    type: Array,
+    type: Object,
     default: () => {}
   }
 })

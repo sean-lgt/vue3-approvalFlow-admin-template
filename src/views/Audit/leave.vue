@@ -34,12 +34,12 @@
         </el-table-column>
         <el-table-column label="操作" width="180">
           <template #default="scope">
-            <el-button @click="handlePreview(scope.row)" size="mini"
+            <el-button @click="handlePreview(scope.row)" size="small"
               >查看</el-button
             >
             <el-button
               type="danger"
-              size="mini"
+              size="small"
               @click="handleInvalid(scope.row)"
               >作废</el-button
             >

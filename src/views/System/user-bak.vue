@@ -58,13 +58,13 @@
           <template #default="scope">
             <el-button
               @click="handleEdit(scope.row)"
-              size="mini"
+              size="small"
               v-has="'user-edit'"
               >编辑</el-button
             >
             <el-button
               type="danger"
-              size="mini"
+              size="small"
               @click="handleDel(scope.row)"
               v-has="'user-delete'"
               >删除</el-button

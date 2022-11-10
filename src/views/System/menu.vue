@@ -15,7 +15,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getMenuList">查询</el-button>
+          <el-button type="primary" @click="handleQueryMenu">查询</el-button>
           <el-button @click="handleResetSearch">重置</el-button>
         </el-form-item>
       </el-form>
@@ -42,15 +42,15 @@
             <el-button
               @click="handleAdd(2, scope.row)"
               type="primary"
-              size="mini"
+              size="small"
               >新增</el-button
             >
-            <el-button @click="handleEdit(scope.row)" size="mini"
+            <el-button @click="handleEdit(scope.row)" size="small"
               >编辑</el-button
             >
             <el-button
               type="danger"
-              size="mini"
+              size="small"
               @click="handleDel(scope.row._id)"
               >删除</el-button
             >
@@ -287,6 +287,11 @@ const fetchMenuList = async () => {
 onMounted(() => {
   fetchMenuList() //生命钩子函数获取数
 })
+
+// 点击查询
+const handleQueryMenu = async () => {
+  await fetchMenuList()
+}
 
 // 点击编辑操作
 const handleEdit = async (rowItem) => {

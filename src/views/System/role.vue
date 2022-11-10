@@ -32,11 +32,11 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="260">
           <template #default="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button size="small" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
-              size="mini"
+              size="small"
               type="primary"
               @click="handleOpenPermission(scope.row)"
               >设置权限</el-button
@@ -44,7 +44,7 @@
             <el-button
               type="danger"
               @click="handleDel(scope.row._id)"
-              size="mini"
+              size="small"
               >删除</el-button
             >
           </template>

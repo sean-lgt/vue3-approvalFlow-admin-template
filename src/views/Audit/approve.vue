@@ -35,7 +35,7 @@
               v-if="[1].includes(scope.row.applyState)"
               type="primary"
               @click="handleAudit(scope.row)"
-              size="mini"
+              size="small"
               >审核
             </el-button>
           </template>
